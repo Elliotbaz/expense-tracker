@@ -4,17 +4,6 @@ import {
 } from 'reactfire';
 import Routing from './routes';
 
-// function BurritoTaste() {
-//   const burritoRef = doc(useFirestore(), 'tryreactfire', 'burrito');
-//   const { status, data } = useFirestoreDocData(burritoRef);
-
-//   if (status === 'loading') {
-//     return <p>Fetching burrito flavor...</p>;
-//   }
-
-//   return <p>The burrito is {data.yummy ? 'good' : 'bad'}!</p>;
-// }
-
 function App() {
   const firestoreInstance = getFirestore();
   return (

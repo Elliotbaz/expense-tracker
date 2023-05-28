@@ -4,12 +4,13 @@ import Signup from './pages/SignUp';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import { useSigninCheck } from 'reactfire';
+import Loading from './components/Loading';
 
 function ProtectedRoute({ children }) {
     const { status, data: signInCheckResult } = useSigninCheck();
 
     if (status === 'loading') {
-        return <div>Loading...</div>; // Adjust this to your app's loading component
+        return <Loading />;
     }
 
     console.log(signInCheckResult)
@@ -25,7 +26,7 @@ function PublicRoute({ children }) {
     const { status, data: signInCheckResult } = useSigninCheck();
 
     if (status === 'loading') {
-        return <div>Loading...</div>; // Adjust this to your app's loading component
+        return <Loading />;
     }
 
     if (signInCheckResult.signedIn === false) {

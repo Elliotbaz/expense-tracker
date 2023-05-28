@@ -13,6 +13,7 @@ import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { DataGrid } from '@mui/x-data-grid';
+import Loading from '../components/Loading';
 
 
 export default function Dashboard() {
@@ -156,8 +157,8 @@ export default function Dashboard() {
         setSelectedMonth(event.target.value);
     }
 
-    if (status === "loading") {
-        return <p>Loading...</p>;
+    if (status === 'loading') {
+        return <Loading />; // Adjust this to your app's loading component
     }
 
     const Item = styled(Paper)(({ theme }) => ({
@@ -181,12 +182,30 @@ export default function Dashboard() {
                                         {(monthsData[selectedMonth]?.profit || 0) - (monthsData[selectedMonth]?.expenses || 0)}
                                     </span>
                                 </h3>
+
                             </Item>
                         </Grid>
                         <Grid item xs={6}>
                             <Item sx={{ paddingBottom: '30px' }}>
                                 <h1>👋 Welcome, {data.name}</h1>
                                 <b style={{ float: 'left', color: 'green' }}> Total Income: ${(monthsData[selectedMonth]?.profit || 0)}</b>
+                                <TextField
+                                    select
+                                    label="Select a month"
+                                    value={selectedMonth}
+                                    onChange={handleMonthChange}
+
+                                    margin="normal"
+                                    required
+                                    size="small"
+                                    sx={{ width: "30%", margin: 0 }}
+                                >
+                                    {months.map((month, index) => (
+                                        <MenuItem key={index} value={index}>
+                                            {month}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
                                 <b style={{ float: 'right', color: 'red' }}> Total Expenses: ${(monthsData[selectedMonth]?.expenses || 0)}</b>
                             </Item>
                         </Grid>
@@ -200,52 +219,47 @@ export default function Dashboard() {
 
                         </Grid>
                     </Grid>
-                    <TextField
-                        select
-                        label="Select a month"
-                        value={selectedMonth}
-                        onChange={handleMonthChange}
-                        fullWidth
-                        margin="normal"
-                        required
-                    >
-                        {months.map((month, index) => (
-                            <MenuItem key={index} value={index}>
-                                {month}
-                            </MenuItem>
-                        ))}
-                    </TextField>
-                    <form onSubmit={handleSubmit}>
-                        <TextField
-                            select
-                            label="Type"
-                            value={type}
-                            onChange={(e) => setType(e.target.value)}
-                            fullWidth
-                            margin="normal"
-                            required
-                        >
-                            <MenuItem value="Profit">Profit</MenuItem>
-                            <MenuItem value="Expense">Expense</MenuItem>
-                        </TextField>
-                        <TextField
-                            label="Title"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            fullWidth
-                            margin="normal"
-                            required
-                        />
-                        <TextField
-                            label="Amount"
-                            value={amount}
-                            onChange={(e) => setAmount(e.target.value)}
-                            fullWidth
-                            margin="normal"
-                            required
-                        />
-                        <Button type="submit" variant="contained">Add Entry</Button>
-                    </form>
+                    <Grid container>
+                        <Grid item xs={12} sm={3} md={4}></Grid>
+                        <Grid item xs={12} sm={6} md={4}>
+                            <form onSubmit={handleSubmit}>
+                                <TextField
+                                    select
+                                    label="Type"
+                                    value={type}
+                                    onChange={(e) => setType(e.target.value)}
+                                    fullWidth
+                                    margin="normal"
+                                    required
+                                    sx={{ maxWidth: '500px' }}
+                                >
+                                    <MenuItem value="Profit">Profit</MenuItem>
+                                    <MenuItem value="Expense">Expense</MenuItem>
+                                </TextField>
+                                <TextField
+                                    label="Title"
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    fullWidth
+                                    margin="normal"
+                                    required
+                                    sx={{ maxWidth: '500px' }}
+                                />
+                                <TextField
+                                    label="Amount"
+                                    value={amount}
+                                    onChange={(e) => setAmount(e.target.value)}
+                                    fullWidth
+                                    margin="normal"
+                                    required
+                                    sx={{ maxWidth: '500px' }}
+                                />
+                                <Button type="submit" variant="contained">Add Entry</Button>
+                            </form>
+                        </Grid>
+                        <Grid item xs={12} sm={3} md={4}></Grid>
+                    </Grid>
+                    <br />
                     <div style={{ height: 400, width: '100%' }}>
                         <DataGrid rows={filteredLogs} columns={columns} initialState={{
                             pagination: {
