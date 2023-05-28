@@ -1,24 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import { getFirestore } from 'firebase/firestore';
+import {
+  FirestoreProvider,
+} from 'reactfire';
+import Routing from './routes';
+
+// function BurritoTaste() {
+//   const burritoRef = doc(useFirestore(), 'tryreactfire', 'burrito');
+//   const { status, data } = useFirestoreDocData(burritoRef);
+
+//   if (status === 'loading') {
+//     return <p>Fetching burrito flavor...</p>;
+//   }
+
+//   return <p>The burrito is {data.yummy ? 'good' : 'bad'}!</p>;
+// }
 
 function App() {
+  const firestoreInstance = getFirestore();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <FirestoreProvider sdk={firestoreInstance}>
+      <Routing />
+    </FirestoreProvider>
   );
 }
 
