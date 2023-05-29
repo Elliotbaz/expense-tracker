@@ -14,6 +14,8 @@ import IconButton from '@mui/material/IconButton';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { DataGrid } from '@mui/x-data-grid';
 import Loading from '../components/Loading';
+import { useNavigate } from 'react-router-dom';
+import { months } from '../modules/MonthsData';
 
 
 export default function Dashboard() {
@@ -24,7 +26,7 @@ export default function Dashboard() {
     const [amount, setAmount] = useState('');
     const [title, setTitle] = useState('');
     const [filteredLogs, setFilteredLogs] = useState([]);
-
+    const navigate = useNavigate();
 
     const [monthsData, setMonthsData] = useState({});
     const [selectedMonth, setSelectedMonth] = useState(dateTimeNow.getMonth());
@@ -35,7 +37,9 @@ export default function Dashboard() {
     const auth = useAuth();
     const handleSignOut = async () => {
         try {
-            auth.signOut();
+            auth.signOut().then(() => {
+                navigate('/login');
+            });
         } catch (error) {
             console.error('Error signing out', error);
         }
@@ -68,7 +72,7 @@ export default function Dashboard() {
     const userDocRef = doc(firestore, 'users', uid);
     const { status, data } = useFirestoreDocData(userDocRef);
 
-    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
 
     useEffect(() => {
         if (data) {
@@ -158,7 +162,7 @@ export default function Dashboard() {
     }
 
     if (status === 'loading') {
-        return <Loading />; // Adjust this to your app's loading component
+        return <Loading />;
     }
 
     const Item = styled(Paper)(({ theme }) => ({
@@ -170,7 +174,7 @@ export default function Dashboard() {
     }));
 
     return (
-        <div style={{ backgroundColor: '#000' }}>
+        <div style={{ backgroundColor: '#fff' }}>
             <CssBaseline />
             <Container maxWidth="xl">
                 <Box sx={{ bgcolor: '#fff', height: '100vh' }}>
@@ -248,6 +252,7 @@ export default function Dashboard() {
                                 <TextField
                                     label="Amount"
                                     value={amount}
+                                    type='number'
                                     onChange={(e) => setAmount(e.target.value)}
                                     fullWidth
                                     margin="normal"

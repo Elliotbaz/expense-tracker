@@ -3,7 +3,7 @@ import React from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-import { LoginBackground } from '../images-index'
+import { LoginBackground } from '../modules/images-index'
 
 import Stack from '@mui/material/Stack';
 
