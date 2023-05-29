@@ -2,20 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { doc, updateDoc } from "firebase/firestore";
 import { useSigninCheck, useFirestore, useFirestoreDocData, useAuth } from 'reactfire';
 import { styled } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
-import IconButton from '@mui/material/IconButton';
+import { TextField, MenuItem, IconButton, Paper, Grid, Container, Box, CssBaseline } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { DataGrid } from '@mui/x-data-grid';
 import Loading from '../components/Loading';
 import { useNavigate } from 'react-router-dom';
 import { months } from '../modules/MonthsData';
+import Entry from '../components/Entry';
+import DataGridLogs from '../components/DataGridLogs'
 
 
 export default function Dashboard() {
@@ -67,12 +60,8 @@ export default function Dashboard() {
         });
     });
 
-
-
     const userDocRef = doc(firestore, 'users', uid);
     const { status, data } = useFirestoreDocData(userDocRef);
-
-
 
     useEffect(() => {
         if (data) {
@@ -126,35 +115,39 @@ export default function Dashboard() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const timestamp = new Date();
-        const currentMonthData = monthsData[selectedMonth] || { expenses: 0, profit: 0, entries: [] };
+        try {
+            const timestamp = new Date();
+            const currentMonthData = monthsData[selectedMonth] || { expenses: 0, profit: 0, entries: [] };
 
-        const newEntry = {
-            type,
-            title,
-            amount: Number(amount),
-            timestamp
-        };
+            const newEntry = {
+                type,
+                title,
+                amount: Number(amount),
+                timestamp
+            };
 
-        const updatedMonthData = {
-            ...currentMonthData,
-            [type.toLowerCase()]: currentMonthData[type.toLowerCase()] + Number(amount),
-            entries: [...currentMonthData.entries, newEntry]
-        };
+            const updatedMonthData = {
+                ...currentMonthData,
+                [type.toLowerCase()]: currentMonthData[type.toLowerCase()] + Number(amount),
+                entries: [...currentMonthData.entries, newEntry]
+            };
 
-        await updateDoc(userDocRef, {
-            monthsData: {
-                ...monthsData,
+            await updateDoc(userDocRef, {
+                monthsData: {
+                    ...monthsData,
+                    [selectedMonth]: updatedMonthData
+                }
+            });
+
+            setMonthsData(prevMonthsData => ({
+                ...prevMonthsData,
                 [selectedMonth]: updatedMonthData
-            }
-        });
-
-        setMonthsData(prevMonthsData => ({
-            ...prevMonthsData,
-            [selectedMonth]: updatedMonthData
-        }));
-        setAmount('');
-        setTitle('');
+            }));
+            setAmount('');
+            setTitle('');
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     const handleMonthChange = async (event) => {
@@ -226,59 +219,23 @@ export default function Dashboard() {
                     <Grid container>
                         <Grid item xs={12} sm={3} md={4}></Grid>
                         <Grid item xs={12} sm={6} md={4}>
-                            <form onSubmit={handleSubmit}>
-                                <TextField
-                                    select
-                                    label="Type"
-                                    value={type}
-                                    onChange={(e) => setType(e.target.value)}
-                                    fullWidth
-                                    margin="normal"
-                                    required
-                                    sx={{ maxWidth: '500px' }}
-                                >
-                                    <MenuItem value="Profit">Profit</MenuItem>
-                                    <MenuItem value="Expense">Expense</MenuItem>
-                                </TextField>
-                                <TextField
-                                    label="Title"
-                                    value={title}
-                                    onChange={(e) => setTitle(e.target.value)}
-                                    fullWidth
-                                    margin="normal"
-                                    required
-                                    sx={{ maxWidth: '500px' }}
-                                />
-                                <TextField
-                                    label="Amount"
-                                    value={amount}
-                                    type='number'
-                                    onChange={(e) => setAmount(e.target.value)}
-                                    fullWidth
-                                    margin="normal"
-                                    required
-                                    sx={{ maxWidth: '500px' }}
-                                />
-                                <Button type="submit" variant="contained">Add Entry</Button>
-                            </form>
+                            <Entry
+                                type={type}
+                                setType={setType}
+                                title={title}
+                                setTitle={setTitle}
+                                amount={amount}
+                                setAmount={setAmount}
+                                handleSubmit={handleSubmit}
+                            />
                         </Grid>
                         <Grid item xs={12} sm={3} md={4}></Grid>
                     </Grid>
                     <br />
                     <div style={{ height: 400, width: '100%' }}>
-                        <DataGrid rows={filteredLogs} columns={columns} initialState={{
-                            pagination: {
-                                paginationModel: {
-                                    pageSize: 5,
-                                },
-                            },
-
-                        }}
-                            pageSizeOptions={[5]} />
+                        <DataGridLogs rows={filteredLogs} columns={columns} />
                     </div>
                 </Box>
-
-
             </Container>
         </div>
     );
