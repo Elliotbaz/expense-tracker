@@ -184,7 +184,7 @@ export default function Dashboard() {
                         </Grid>
                         <Grid item xs={6}>
                             <Item sx={{ paddingBottom: '30px' }}>
-                                <h1>👋 Welcome, {data.name}</h1>
+                                <h1>👋 Welcome, {data?.name}</h1>
                                 <b style={{ float: 'left', color: 'green' }}> Total Income: ${(monthsData[selectedMonth]?.profit || 0)}</b>
                                 <TextField
                                     select
