@@ -26,7 +26,7 @@ export default class Auth {
     }
 
     async signIn(email, password) {
-        await signInWithEmailAndPassword(this.auth, email, password);
+        return await signInWithEmailAndPassword(this.auth, email, password);
     }
 
 }

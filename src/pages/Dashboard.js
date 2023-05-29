@@ -24,15 +24,15 @@ export default function Dashboard() {
     const [monthsData, setMonthsData] = useState({});
     const [selectedMonth, setSelectedMonth] = useState(dateTimeNow.getMonth());
     let uid;
-    if (signInCheckResult) {
-        uid = signInCheckResult.user.uid;
+    if (signInCheckResult?.user?.uid) {
+        uid = signInCheckResult?.user?.uid;
     }
     const auth = useAuth();
+
     const handleSignOut = async () => {
         try {
-            auth.signOut().then(() => {
-                navigate('/login');
-            });
+            await auth.signOut(auth);
+            navigate('/login');
         } catch (error) {
             console.error('Error signing out', error);
         }
@@ -61,6 +61,7 @@ export default function Dashboard() {
     });
 
     const userDocRef = doc(firestore, 'users', uid);
+
     const { status, data } = useFirestoreDocData(userDocRef);
 
     useEffect(() => {
